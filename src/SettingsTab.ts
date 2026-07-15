@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting, Notice } from 'obsidian';
+import { App, PluginSettingTab, Setting, Notice, type SettingDefinitionItem, requireApiVersion } from 'obsidian';
 import LinearPlugin from './main';
 import { LinearService } from './services/LinearService';
 
@@ -8,6 +8,43 @@ export class LinearSettingsTab extends PluginSettingTab {
     constructor(app: App, plugin: LinearPlugin) {
         super(app, plugin);
         this.plugin = plugin;
+    }
+
+    getSettingDefinitions(): SettingDefinitionItem[] {
+        if (!requireApiVersion('1.13.0')) return [];
+
+        return [
+            {
+                name: 'Linear integration settings',
+                render: (setting) => {
+                    setting.settingEl.empty();
+                    setting.settingEl.createEl('h2', { text: 'Linear Integration Settings' });
+                }
+            },
+            {
+                name: 'API configuration',
+                aliases: ['Linear API key', 'Connection test'],
+                render: (setting) => {
+                    setting.settingEl.empty();
+                    this.createApiKeySection(setting.settingEl);
+                }
+            },
+            {
+                name: 'Debugging & troubleshooting',
+                aliases: ['Debug mode'],
+                render: (setting) => {
+                    setting.settingEl.empty();
+                    this.createDebugSection(setting.settingEl);
+                }
+            },
+            {
+                name: 'Usage examples',
+                render: (setting) => {
+                    setting.settingEl.empty();
+                    this.createHelpSection(setting.settingEl);
+                }
+            }
+        ];
     }
 
     display(): void {
@@ -251,4 +288,4 @@ hideDescription: true
                 container.innerHTML = `<span style="color: var(--text-muted); font-size: 0.9em;">Click "Test Connection" to verify</span>`;
         }
     }
-} 
+}
