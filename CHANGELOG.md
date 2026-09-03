@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+### Added
+- `hideTitle` option to hide the issue title, leaving the identifier as a link next to the status badge
+- `hideDueDate` option to hide the due date badge (including "No due date")
+- Vitest unit tests for block option parsing and issue rendering (`npm test`)
+
 ## [1.1.3] - 2025-11-01
 ### Added
 - **Enhanced Settings Page with Professional UI**:

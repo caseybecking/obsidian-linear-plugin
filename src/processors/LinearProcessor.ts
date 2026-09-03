@@ -66,6 +66,14 @@ export class LinearProcessor extends MarkdownRenderChild {
                 if (parsed.hideDescription && parsed.hideDescription === true) {
                     options.hideDescription = true;
                 }
+
+                if (parsed.hideTitle === true) {
+                    options.hideTitle = true;
+                }
+
+                if (parsed.hideDueDate === true) {
+                    options.hideDueDate = true;
+                }
             }
             
             this.log('Final parsed options:', options);
@@ -90,60 +98,64 @@ export class LinearProcessor extends MarkdownRenderChild {
             const issueEl = container.createDiv({ cls: "linear-issue" });
 
             // Create issue header with number and title
-            const headerEl = issueEl.createDiv({ cls: "linear-issue-header" });
+            const headerCls = ["linear-issue-header"];
+            if (options.hideTitle) headerCls.push("linear-issue-header-compact");
+            const headerEl = issueEl.createDiv({ cls: headerCls });
             const link = headerEl.createEl("a", {
                 cls: "linear-issue-title",
                 href: issue.url,
-                text: `${issue.identifier}: ${issue.title}`
+                text: options.hideTitle ? issue.identifier : `${issue.identifier}: ${issue.title}`
             });
             link.setAttribute("target", "_blank");
 
-            // Add metadata section for due date and other info
-            const metadataEl = issueEl.createDiv({ cls: "linear-issue-metadata" });
+            if (!options.hideDueDate) {
+                // Add metadata section for due date and other info
+                const metadataEl = issueEl.createDiv({ cls: "linear-issue-metadata" });
 
-            // Add due date if available
-            if (issue.dueDate) {
-                this.log('Processing due date:', issue.dueDate);
-                const dueDate = new Date(issue.dueDate);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                const tomorrow = new Date(today);
-                tomorrow.setDate(tomorrow.getDate() + 1);
+                // Add due date if available
+                if (issue.dueDate) {
+                    this.log('Processing due date:', issue.dueDate);
+                    const dueDate = new Date(issue.dueDate);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
                 
-                let dueDateText = '';
-                let dueDateClass = '';
+                    let dueDateText = '';
+                    let dueDateClass = '';
                 
-                if (dueDate.toDateString() === today.toDateString()) {
-                    dueDateText = '📅 Due Today';
-                    dueDateClass = 'due-today';
-                } else if (dueDate.toDateString() === tomorrow.toDateString()) {
-                    dueDateText = '📅 Due Tomorrow';
-                    dueDateClass = 'due-tomorrow';
-                } else if (dueDate < today) {
-                    dueDateText = `⚠️ Overdue: ${dueDate.toLocaleDateString()}`;
-                    dueDateClass = 'overdue';
+                    if (dueDate.toDateString() === today.toDateString()) {
+                        dueDateText = '📅 Due Today';
+                        dueDateClass = 'due-today';
+                    } else if (dueDate.toDateString() === tomorrow.toDateString()) {
+                        dueDateText = '📅 Due Tomorrow';
+                        dueDateClass = 'due-tomorrow';
+                    } else if (dueDate < today) {
+                        dueDateText = `⚠️ Overdue: ${dueDate.toLocaleDateString()}`;
+                        dueDateClass = 'overdue';
+                    } else {
+                        dueDateText = `📅 Due: ${dueDate.toLocaleDateString()}`;
+                        dueDateClass = 'upcoming';
+                    }
+
+                    this.log('Creating due date element:', {
+                        text: dueDateText,
+                        class: dueDateClass,
+                        originalDate: issue.dueDate,
+                        parsedDate: dueDate
+                    });
+
+                    metadataEl.createSpan({
+                        cls: `linear-issue-due-date ${dueDateClass}`,
+                        text: dueDateText
+                    });
                 } else {
-                    dueDateText = `📅 Due: ${dueDate.toLocaleDateString()}`;
-                    dueDateClass = 'upcoming';
+                    this.log('No due date for issue');
+                    metadataEl.createSpan({
+                        cls: 'linear-issue-due-date no-date',
+                        text: '📅 No due date'
+                    });
                 }
-
-                this.log('Creating due date element:', {
-                    text: dueDateText,
-                    class: dueDateClass,
-                    originalDate: issue.dueDate,
-                    parsedDate: dueDate
-                });
-
-                metadataEl.createSpan({
-                    cls: `linear-issue-due-date ${dueDateClass}`,
-                    text: dueDateText
-                });
-            } else {
-                this.log('No due date for issue');
-                metadataEl.createSpan({
-                    cls: 'linear-issue-due-date no-date',
-                    text: '📅 No due date'
-                });
             }
 
             // Add status if available
