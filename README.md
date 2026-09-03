@@ -97,6 +97,17 @@ To show only issue titles without descriptions, use the `hideDescription` option
 hideDescription: true
 ```
 
+#### Hide Title or Due Date
+
+To render a more compact card, hide the title text with `hideTitle` and the due date badge with `hideDueDate`. `hideTitle` keeps the issue identifier as a link. Combined with `hideDescription`, the card shows just the identifier and status badge, e.g. `ENG-123  Done`:
+
+```linear
+id: ENG-123
+hideDescription: true
+hideTitle: true
+hideDueDate: true
+```
+
 ### Combining Options
 
 You can combine multiple options to create specific views:
@@ -177,7 +188,7 @@ The plugin includes comprehensive error handling:
 
 ### Prerequisites
 
-- NodeJS v16 or higher
+- NodeJS v16 or higher (v20.19 or higher to run the unit tests)
 - npm or yarn
 
 ### Setup
@@ -192,7 +203,15 @@ Run `npm run build` to create a production build.
 
 ### Testing
 
-To test the plugin in Obsidian:
+Run the unit tests with:
+
+```bash
+npm test
+```
+
+The tests live in `tests/` and run with [Vitest](https://vitest.dev) in a jsdom environment. Since the `obsidian` package ships types only, `tests/mocks/obsidian.ts` provides a minimal runtime stand-in and `tests/setup.ts` recreates the DOM helpers Obsidian adds to `HTMLElement`.
+
+To test the plugin manually in Obsidian:
 1. Build the plugin using `npm run build`
 2. Copy `main.js`, `manifest.json`, and `styles.css` to your Obsidian plugins directory
 3. Enable the plugin in Obsidian

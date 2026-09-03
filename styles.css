@@ -16,10 +16,18 @@
     margin-bottom: 0.5em;
 }
 
+.linear-issue-header:last-child {
+    margin-bottom: 0;
+}
+
 .linear-issue-title {
     font-weight: 600;
     text-decoration: none;
     flex-grow: 1;
+}
+
+.linear-issue-header-compact .linear-issue-title {
+    flex-grow: 0;
 }
 
 .linear-issue-status {

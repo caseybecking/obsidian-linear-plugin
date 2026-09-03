@@ -32,6 +32,8 @@ export interface IssueOptions {
         direction: 'asc' | 'desc';
     };
     hideDescription?: boolean;
+    hideTitle?: boolean;
+    hideDueDate?: boolean;
 }
 
 export class LinearService {

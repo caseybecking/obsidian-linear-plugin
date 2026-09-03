@@ -159,6 +159,14 @@ ids:
   - LIN-789
 \`\`\`</code></pre>
 
+                <p style="margin-top: 16px;"><strong>Show only the identifier and status:</strong></p>
+                <pre style="background-color: var(--background-modifier-border); padding: 8px; border-radius: 4px; margin: 8px 0;"><code>\`\`\`linear
+id: LIN-123
+hideDescription: true
+hideTitle: true
+hideDueDate: true
+\`\`\`</code></pre>
+
                 <p style="margin-top: 16px;"><strong>Filter issues with options:</strong></p>
                 <pre style="background-color: var(--background-modifier-border); padding: 8px; border-radius: 4px; margin: 8px 0;"><code>\`\`\`linear
 team: Engineering
